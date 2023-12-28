@@ -16,7 +16,7 @@ import java.util.function.Function;
 public class JwtHelper {
 
     @Value("${jwt.token.validity}")
-    public static long JWT_TOKEN_VALIDITY;
+    public long JWT_TOKEN_VALIDITY;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -59,8 +59,8 @@ public class JwtHelper {
     //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
     //   compaction of the JWT to a URL-safe string
     private String doGenerateToken(Map<String, Object> claims, String subject) {
-
-        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+        return Jwts.builder().setClaims(claims).setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }

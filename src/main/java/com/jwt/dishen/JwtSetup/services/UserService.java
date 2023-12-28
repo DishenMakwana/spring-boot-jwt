@@ -1,6 +1,9 @@
 package com.jwt.dishen.JwtSetup.services;
 
-import com.jwt.dishen.JwtSetup.models.User;
+import com.jwt.dishen.JwtSetup.entities.User;
+import com.jwt.dishen.JwtSetup.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,15 +12,20 @@ import java.util.UUID;
 
 @Service
 public class UserService {
-    private List<User> store = new ArrayList<>();
 
-    public UserService() {
-        store.add(new User(UUID.randomUUID().toString(), "Dishen", "dishen@gmail.com"));
-        store.add(new User(UUID.randomUUID().toString(), "Makwana", "makwana@gmail.com"));
-        store.add(new User(UUID.randomUUID().toString(), "Raj", "raj@gmail.com"));
-    }
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<User> getUsers() {
-        return store;
+        return userRepository.findAll();
+    }
+
+    public User createUser(User user) {
+        user.setUserId(UUID.randomUUID().toString());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
     }
 }

@@ -1,8 +1,10 @@
 package com.jwt.dishen.JwtSetup.controllers;
 
+import com.jwt.dishen.JwtSetup.entities.User;
 import com.jwt.dishen.JwtSetup.models.JwtRequest;
 import com.jwt.dishen.JwtSetup.models.JwtResponse;
 import com.jwt.dishen.JwtSetup.security.JwtHelper;
+import com.jwt.dishen.JwtSetup.services.UserService;
 import org.apache.coyote.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,9 @@ public class AuthController {
     @Autowired
     private JwtHelper helper;
 
+    @Autowired
+    private UserService userService;
+
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/login")
@@ -44,6 +49,11 @@ public class AuthController {
                 .username(userDetails.getUsername()).build();
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
     private void doAuthenticate(String email, String password) {
